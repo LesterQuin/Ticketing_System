@@ -1,11 +1,12 @@
 import express from 'express';
 import { register, login } from '../../controllers/auth/auth_Controller.js';
-//import { authenticate, authorize } from '../../middlewares/auth_middleware.js';
+import { authenticate, authorize } from '../../middlewares/auth_middleware';
 
 const router = express.Router();
 
-// Public routes
+// For registration of credentials
 router.post('/register', register);
+// For login of admin, user, superadmin
 router.post('/login', login);
 
 // Protected route
