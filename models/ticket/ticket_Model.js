@@ -1,5 +1,4 @@
 // ticket/ticket_Model.js
-import { pool } from "mssql";
 import { poolPromise, sql } from "../../config/db.js"
 
 // Create a ticket
@@ -64,4 +63,26 @@ export const assignTicket = async (ticket_id, agent_id) => {
                 status = 'On Progress'
             WHERE id = @ticket_id
         `);
+};
+
+// Update ticket status
+export const updateStatus = async (ticket_id, status) => {
+    const pool = await poolPromise;
+
+    let dateColumn = null;
+    if (status === 'Resolved') dateColumn = 'resolved_at';
+    if (status === 'Closed') dateColumn = 'closed_at';
+    if (status === 'Cancelled') dateColumn = 'cancelled_at';
+
+    const query = `
+        UPDATE sg.ticketing_tickets
+        SET status = @status
+        ${dateColumn ? `, ${dateColumn} = GETDATE()` : ''}
+        WHERE id = @ticket_id
+    `;
+
+    await pool.request()
+        .input('ticket_id', sql.Int, ticket_id)
+        .input('status', sql.VarChar(20), status)
+        .query(query);
 };

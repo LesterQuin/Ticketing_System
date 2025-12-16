@@ -46,6 +46,21 @@ export const assignTicket = async (req, res) => {
         await Ticket.assignTicket(ticket_id, agent_id);
 
         res.json({ success: true, message: "Ticket assigned" });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
+}
+
+// Update status (AGENT / ADMIN)
+export const updateStatus = async (req, res) => {
+    try {
+        const { ticket_id, status } = req.body;
+
+        await Ticket.updateStatus(ticket_id, status);
+        
+        res.json({ success: true, message: "Status updated" });
         
     } catch (err) {
         console.error(err);
