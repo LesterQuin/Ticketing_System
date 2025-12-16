@@ -37,3 +37,18 @@ export const getTickets = async (req,res) => {
         res.status(500).json({ message: "Server error" });
     }
 }
+
+// Assign ticket (ADMIN / SUPERADMIN)
+export const assignTicket = async (req, res) => {
+    try {
+        const { ticket_id, agent_id } = req.body;
+
+        await Ticket.assignTicket(ticket_id, agent_id);
+
+        res.json({ success: true, message: "Ticket assigned" });
+        
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
+}

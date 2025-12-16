@@ -49,3 +49,19 @@ export const getAllTickets = async () => {
     
     return result.recordset;
 }
+
+// Assign IT
+export const assignTicket = async (ticket_id, agent_id) => {
+    const pool = await poolPromise;
+
+    await pool.request()
+        .input("ticket_id", sql.Int, ticket_id)
+        .input("agent_id", sql.Int, agent_id)
+        .query(`
+            UPDATE sg.ticketing_tickets
+            SET agent_id = @agent_id,
+                assisgned_at = GETDATE(),
+                status = 'On Progress'
+            WHERE id = @ticket_id
+        `);
+};
