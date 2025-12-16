@@ -58,3 +58,13 @@ export const login = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 };
+
+// Get Users
+export const users = async (req, res) => {
+    try {
+        
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'user not found'});
+    }
+}
