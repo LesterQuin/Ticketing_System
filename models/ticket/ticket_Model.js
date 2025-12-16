@@ -1,4 +1,5 @@
 // ticket/ticket_Model.js
+import { pool } from "mssql";
 import { poolPromise, sql } from "../../config/db.js"
 
 // Create a ticket
@@ -34,3 +35,17 @@ export const getTicketsByUser = async (user_id) => {
         `);
     return result.recordset;
 };
+
+// Get all ticket (admin/superadmin)
+export const getAllTickets = async () => {
+    const pool = await poolPromise;
+
+    const result = await pool.request()
+        .query(`
+            SELECT *
+            FROM sg.ticketing_tickets
+            ORDER BY created_at DESC
+        `);
+    
+    return result.recordset;
+}
