@@ -16,7 +16,7 @@ export const createTicket = async (req, res) => {
             priority
         });
 
-        res.status(201).json ({ success: true, ticket_id: ticketId });
+        res.status(201).json ({ success: true, ticket_id: ticketId, message: "Ticket created successfully." });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'SERVER ERROR' });
@@ -61,9 +61,34 @@ export const updateStatus = async (req, res) => {
         await Ticket.updateStatus(ticket_id, status);
         
         res.json({ success: true, message: "Status updated" });
-        
+
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Server error" });
     }
+}
+
+// Add comment 
+export const addComment = async (req, res) => {
+    try {
+        const { comment } = req.body;
+        if ( !comment ) return res.status(400).json({ message: "Comment required."})
+
+        await Ticket.addComment({
+            ticket_id: req.params.id,
+            user_id: req.user.id,
+            comment
+        });
+
+        res.status(201).json({ success: true, message: "Comment added." });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
+}
+
+export const listComments = async (req, res) => {
+    const { ticket_id } = req.params;
+    const comments = await Ticket.getComments(ticket_id);
+    res.json({ success: true, comments });
 }

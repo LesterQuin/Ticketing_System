@@ -86,3 +86,31 @@ export const updateStatus = async (ticket_id, status) => {
         .input('status', sql.VarChar(20), status)
         .query(query);
 };
+
+// Add Comment
+export const addComment = async ({ ticket_id, user_id, comment}) => {
+    const pool = await poolPromise;
+    await pool.request()
+        .input("ticket_id", sql.Int, ticket_id)
+        .input("user_id", sql.Int, user_id)
+        .input("comment", sql.Text, comment)
+        .query(`
+            INSERT INTO sg.ticketing_ticket_comments (ticket_id, user_id, comment)
+            VALUES (@ticket_id, @user_id, @comment
+        `);
+}
+
+export const getComments = async (ticket_id) => {
+    const pool = await poolPromise;
+    const res = await pool.request()
+        .input("ticket_id", sql.Int, ticket_id)
+        .query(`
+            SELECT c.*, u.first_name, u.last_name
+            FROM sg.ticketing_ticket_comments c 
+            JOIN sg.ticketing_users u ON u.id = c.user_id
+            WHERE c.ticket_id = @ticket_id
+            ORDER BY c.created_at ASC
+        `);
+    
+        return res.recordset;
+}
