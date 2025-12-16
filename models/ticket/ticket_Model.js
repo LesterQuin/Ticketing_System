@@ -1,7 +1,6 @@
 // ticket/ticket_Model.js
 import { poolPromise, sql } from "../../config/db.js"
 
-
 // Create a ticket
 export const createTicket = async ({ user_id, subject, description, priority }) => {
     const pool = await poolPromise
@@ -20,3 +19,18 @@ export const createTicket = async ({ user_id, subject, description, priority }) 
         `);
     return result.recordset[0].id;
 }
+
+// Get Ticket by User
+export const getTicketsByUser = async (user_id) => {
+    const pool = await poolPromise;
+
+    const result = await pool.request()
+        .input("user_id", sql.Int, user_id)
+        .query(`
+            SELECT *
+            FROM sg.ticketing_tickets
+            WHERE user_id = @user_id
+            ORDER BY created_at DESC
+        `);
+    return result.recordset;
+};

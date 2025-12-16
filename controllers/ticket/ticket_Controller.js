@@ -22,3 +22,18 @@ export const createTicket = async (req, res) => {
         res.status(500).json({ message: 'SERVER ERROR' });
     }
 }
+
+// Get ticket (USER sees own, ADMIN sees ALL)
+export const getTickets = async (req,res) => {
+    try {
+        const tickets = req.user.role === 'user'
+            ? await Ticket.getTicketsByUser(req.user.id)
+            : await Ticket.getAllTickets();
+        
+        res.json({ success: true, tickets });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
+}
