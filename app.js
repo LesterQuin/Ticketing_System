@@ -1,6 +1,7 @@
 // app.js
 import express from 'express';
 import authRoutes from './routes/auth/auth_routes.js';
+import ticketRoutes from './routes/ticket/ticket_routes.js'
 
 const app = express();
 
@@ -12,8 +13,6 @@ app.get("/", (req, res) => {
 
 // Mount route modules
 app.use('/api/auth', authRoutes);
-
-// You can add more route modules here
-// e.g., app.use('/tickets', ticketRoutes);
+app.use('/api/tickets', ticketRoutes);
 
 export default app;
