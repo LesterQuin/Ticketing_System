@@ -6,6 +6,7 @@ import jwt from 'jsonwebtoken';
 // User registration
 export const register = async (req, res) => {
     try {
+        console.log('REGISTER CONTROLLER HIT');
         if (!req.body || Object.keys(req.body).length === 0) 
             return res.status(400).json({ message: 'Request body missing' });
 

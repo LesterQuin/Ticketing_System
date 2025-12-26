@@ -2,23 +2,21 @@
 import { poolPromise, sql } from "../../config/db.js"
 
 // Create a ticket
-export const createTicket = async ({ user_id, subject, description, priority }) => {
-    const pool = await poolPromise
-
-    const result = await pool.request()
-        .input("user_id", sql.Int, user_id)
-        .input("subject", sql.VarChar(255), subject)
-        .input("description", sql.Text, description)
-        .input("priority", sql.VarChar(10), priority || 'Medium')
+export const createTicket = async ({ user_id, agent_id = null, subject, description, priority = 'Medium' }) => {
+    const pool = await poolPromise;
+    const res = await pool.request()
+        .input('user_id', sql.Int, user_id)
+        .input('agent_id', sql.Int, agent_id)
+        .input('subject', sql.VarChar(255), subject)
+        .input('description', sql.Text, description)
+        .input('priority', sql.VarChar(10), priority)
         .query(`
-            INSERT INTO sg.ticketing_tickets
-                (user_id, subject, description, priority
-            VALUES
-                (@user_id, @subject, @description, @priority)
+            INSERT INTO sg.ticketing_tickets (user_id, agent_id, subject, description, priority)
+            VALUES (@user_id, @agent_id, @subject, @description, @priority);
             SELECT SCOPE_IDENTITY() AS id;
         `);
-    return result.recordset[0].id;
-}
+    return res.recordset?.[0]?.id ?? null;
+};
 
 // Get Ticket by User
 export const getTicketsByUser = async (user_id) => {
@@ -51,8 +49,9 @@ export const getAllTickets = async () => {
 
 // Assign IT
 export const assignTicket = async (ticket_id, agent_id) => {
+    if (!ticket_id || !agent_id) throw new Error("TicketID and AgendId are required");
+    try {
     const pool = await poolPromise;
-
     await pool.request()
         .input("ticket_id", sql.Int, ticket_id)
         .input("agent_id", sql.Int, agent_id)
@@ -63,30 +62,50 @@ export const assignTicket = async (ticket_id, agent_id) => {
                 status = 'On Progress'
             WHERE id = @ticket_id
         `);
+    return true;
+    } catch (error) {
+        console.error('DB ERROR(assignTicket):', err)
+        throw err;        
+    }
 };
 
 // Update ticket status
 export const updateStatus = async (ticket_id, status) => {
+    try {
     const pool = await poolPromise;
-
-    let dateColumn = null;
-    if (status === 'Resolved') dateColumn = 'resolved_at';
-    if (status === 'Closed') dateColumn = 'closed_at';
-    if (status === 'Cancelled') dateColumn = 'cancelled_at';
+    let timestampColumn = null;
+    switch (status) {
+        case 'On Progress':
+            timestampColumn = 'started_at';
+            break;
+        case 'Resolved':
+            timestampColumn = 'resolved_at';
+            break;
+        case 'Closed':
+            timestampColumn = 'closed_at';
+            break;
+        case 'Cancelled':
+            timestampColumn = 'cancelled_at';
+            break;
+    }
 
     const query = `
         UPDATE sg.ticketing_tickets
         SET status = @status
-        ${dateColumn ? `, ${dateColumn} = GETDATE()` : ''}
+        ${timestampColumn ? `, ${timestampColumn} = GETDATE()` : ''}
         WHERE id = @ticket_id
     `;
-
+    console.log('Executing query', query)
     await pool.request()
         .input('ticket_id', sql.Int, ticket_id)
         .input('status', sql.VarChar(20), status)
         .query(query);
-};
-
+    return true;
+} catch(err) {
+        console.error('DB ERROR:', err)
+        throw err;
+    }
+}
 // Add Comment
 export const addComment = async ({ ticket_id, user_id, comment}) => {
     const pool = await poolPromise;

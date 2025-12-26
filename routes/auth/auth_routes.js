@@ -6,7 +6,7 @@ const router = express.Router();
 
 //--------------------------POST------------------------
 // For registration of credentials
-router.post('/register', authenticate, authorize(['superadmin','admin']), register);
+router.post('/register', register);
 // For login of admin, user, superadmin
 router.post('/login', login);
 
