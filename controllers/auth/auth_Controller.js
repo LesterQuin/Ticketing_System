@@ -60,12 +60,71 @@ export const login = async (req, res) => {
     }
 };
 
-// Get Users
-export const users = async (req, res) => {
+// Get all Users
+export const getAllUsers = async (req, res) => {
     try {
-        
+        const users = await Model.getAllUsers();
+
+        return res.status(200).json({
+            success: true,
+            count: users.length,
+            users
+        });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'user not found'});
+        console.error('Get Users Error:',error);
+        res.status(500).json({ 
+            message: 'Users not found'
+        });
+    }
+}
+
+// Get User
+export const getUser = async (req, res) => {
+    try {
+        const user = await Model.getUserById(req.params.id);
+        if (!user) {
+            return res.status(400).json({
+                message: 'User not found'
+            });
+        }
+        return res.status(200).json({
+            success: true,
+            user
+        });
+    } catch (error) {
+        console.error('Get User Error:',error);
+        return res.status(500).json({
+            message: 'User not found.'
+        })
+    }
+}
+
+export const updateUser = async (req, res) => {
+    try {
+        await Model.updateUser(req.params.id, req.body);
+        return res.status(200).json({
+            success: true,
+            message: 'User updated.'
+        })
+    } catch (error) {
+        console.error('User not found')
+        res.status(500).json({
+            message: 'Server Error.'
+        })
+    }
+}
+
+export const removeUser = async (req, res) => {
+    try {
+        await Model.deleteUser(req.params.id);
+        res.status(200).json({
+            success: true,
+            message: 'User deleted.'
+        })
+    } catch (error) {
+        console.error('Delete user error:', error)
+        return res.status(500).json({
+            message: 'Server error.'
+        });
     }
 }
