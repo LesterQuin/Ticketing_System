@@ -3,6 +3,7 @@ import express from 'express';
 import authRoutes from './routes/auth/auth_routes.js';
 import ticketRoutes from './routes/ticket/ticket_routes.js'
 import ticketStatusRoutes from './routes/admin/ticket_Status_Routes.js'
+import ticketPriorityRoutes from './routes/admin/ticket_Priority_Route.js'
 
 const app = express();
 
@@ -16,5 +17,6 @@ app.get("/", (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/tickets', ticketRoutes);
 app.use('/api/ticket-status', ticketStatusRoutes);
+app.use('/api/ticket-priority', ticketPriorityRoutes);
 
 export default app;
