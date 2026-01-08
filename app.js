@@ -2,7 +2,7 @@
 import express from 'express';
 import authRoutes from './routes/auth/auth_routes.js';
 import ticketRoutes from './routes/ticket/ticket_routes.js'
-import ticketStatusRoutes from './routes/ticket/ticket_Status_Routes.js'
+import ticketStatusRoutes from './routes/admin/ticket_Status_Routes.js'
 
 const app = express();
 

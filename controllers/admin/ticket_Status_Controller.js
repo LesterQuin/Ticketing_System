@@ -1,4 +1,4 @@
-import * as Status from "../../models/ticket/ticket_Status_Model.js";
+import * as Status from "../../models/admin/ticket_Status_Model.js";
 import { isAlphaSpaceOnly } from "../../utils/validators.js";
 
 /**
