@@ -185,7 +185,7 @@ export const getUser = async (req, res) => {
 // ----------------- UPDATE USER (Admin) -----------------
 export const updateUser = async (req, res) => {
     try {
-        let { email, role, first_name ,middle_name, last_name, department, birthday, phone, address } = req.body;
+        let { email, role, first_name ,middle_name, last_name, id_department, birthday, phone, address } = req.body;
 
         if (email){
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -209,7 +209,10 @@ export const updateUser = async (req, res) => {
         });
 
         await Model.updateUser(req.params.id, { email, role });
-        await Model.updateProfile(req.params.id, { first_name, middle_name, last_name, department, birthday, phone, address });
+        await Model.updateProfile(req.params.id, { 
+            first_name, middle_name, last_name, 
+            id_department, birthday, phone, address 
+        });
 
         res.status(200).json({
             success: true,
@@ -296,6 +299,10 @@ export const updateMyProfile = async (req, res) => {
 
         // Fetch updated profile
         const updatedProfile = await Model.getProfileByUserId(req.user.id);
+
+        if (updatedProfile?.birthday) {
+            updatedProfile.birthday = new Date(updatedProfile.birthday).toISOString().split('T')[0];
+        }
 
         res.status(200).json({
             success: true, 

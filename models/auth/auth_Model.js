@@ -59,9 +59,11 @@ export const getProfileByUserId = async (userId) => {
     const res = await pool.request()
         .input('user_id', sql.Int, userId)
         .query(`
-            SELECT *
-            FROM sg.ticketing_user_profiles
-            WHERE user_id = @user_id
+            SELECT p.*, d.name_department
+            FROM sg.ticketing_user_profiles p
+            LEFT JOIN sg.ticketing_departments d
+                ON p.id_department = d.id_department
+            WHERE p.user_id = @user_id
         `);
 
     return res.recordset[0] ?? null;
@@ -74,8 +76,8 @@ export const updateProfile = async (userId, data) => {
         .input('user_id', sql.Int, userId)
         .input('first_name', sql.VarChar(50), data.first_name)
         .input('middle_name', sql.VarChar(50), data.middle_name ?? null)
-        .input('last_name', sql.VarChar(50), data.last_name) // fix here
-        .input('department', sql.VarChar(100), data.department ?? null)
+        .input('last_name', sql.VarChar(50), data.last_name)
+        .input('id_department', sql.Int, data.id_department ?? null)
         .input('phone', sql.VarChar(20), data.phone ?? null)
         .input('birthday', sql.Date, data.birthday ?? null)
         .input('address', sql.VarChar(255), data.address ?? null)
@@ -84,7 +86,7 @@ export const updateProfile = async (userId, data) => {
             SET first_name = @first_name,
                 middle_name = @middle_name,
                 last_name = @last_name,
-                department = @department,
+                id_department = @id_department,
                 birthday = @birthday,
                 phone = @phone,
                 address = @address,
