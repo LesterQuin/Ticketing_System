@@ -1,18 +1,32 @@
 import express from "express";
-//import { assignTicket, getAssignedTickets, getUnassignedTickets, getTicketsByAgent, unassignTicket } from "../../controllers/ticket/ticket_Assign_Controller.js";
 import * as Assign from "../../controllers/ticket/ticket_Assign_Controller.js";
 const router = express.Router();
 
+// Assign a ticket
 router.post("/", Assign.assignTicket);
-router.get("/assigned", Assign.getAssignedTickets);
-router.get("/unassigned", Assign.getUnassignedTickets);
-router.get("/agent/:agent_id", Assign.getTicketsByAgent);
-router.delete("/:id", Assign.unassignTicket);
 
-
+// Get all assignments
 router.get("/", Assign.getAllAssignments);
-router.get("/agent/:agent_id", Assign.getAssignmentsByAgent);
-router.put("/", Assign.updateAssignment);
+
+// Get assigned tickets
+router.get("/assigned", Assign.getAssignedTickets);
+
+// Get unassigned tickets
+router.get("/unassigned", Assign.getUnassignedTickets);
+
+// Get tickets by agent
+router.get("/tickets/agent/:agent_id", Assign.getTicketsByAgent);
+
+// Get assignments by agent
+router.get("/assignments/agent/:agent_id", Assign.getAssignmentsByAgent);
+
+// Update assignment
+router.put("/:id", Assign.updateAssignment);
+
+// Unassign ticket
+router.delete("/unassign/:id", Assign.unassignTicket);
+
+// Delete assignment
 router.delete("/:id", Assign.deleteAssignment);
 
 export default router;

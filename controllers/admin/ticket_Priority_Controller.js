@@ -78,11 +78,11 @@ export const getPriority = async (req, res) => {
  */
 export const updatePriority = async (req, res) => {
     try {
-        const { priority_name } = req.body;
+        const { id, priority_name } = req.body;
 
-        if (!priority_name) {
+        if ( !id || !priority_name) {
             return res.status(400).json({
-                message: "priority_name is required."
+                message: "id and priority_name is required."
             });
         }
 

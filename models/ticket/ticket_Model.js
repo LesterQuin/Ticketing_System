@@ -58,7 +58,7 @@ export const assignTicket = async (ticket_id, agent_id) => {
         .query(`
             UPDATE sg.ticketing_tickets
             SET agent_id = @agent_id,
-                assisgned_at = GETDATE(),
+                assigned_at = GETDATE(),
                 status = 'On Progress'
             WHERE id = @ticket_id
         `);

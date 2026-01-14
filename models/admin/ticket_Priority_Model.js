@@ -10,10 +10,6 @@ export const createPriority = async (priority_name) => {
         .query(`
             INSERT INTO sg.ticketing_priority (priority_name)
             VALUES (@priority_name)
-            
-            SELECT * 
-            FROM sg.ticketing_priority
-            WHERE id = SCOPE_IDENTITY()
         `);
     return res.recordset?.[0] ?? null;
 };
@@ -59,10 +55,6 @@ export const updatePriority = async (id, priority_name) => {
             UPDATE sg.ticketing_priority
             SET priority_name = @priority_name
             WHERE id = @id
-        
-            SELECT *
-            FROM sg.ticketing_priority
-            WHERE id = @id;
         `)
     return res.recordset?.[0] ?? null;
 };
