@@ -1,20 +1,21 @@
 // ticket/ticket_route.js
 import express from 'express'
-import { createTicket, getTickets, assignTicket, updateStatus, addComment } from '../../controllers/ticket/ticket_Controller.js'
+import * as Route from '../../controllers/ticket/ticket_Controller.js'
 import { authenticate, authorize } from '../../middlewares/auth_middleware';
 
 const router = express.Router();
 
 //USER
-router.post('/', authenticate, authorize(['user']), createTicket);
-router.get('/', authenticate, authorize(['user', 'admin', 'superadmin']), getTickets);
+router.post('/', authenticate, authorize(['user']), Route.createTicket);
+router.get('/', authenticate, authorize(['user', 'admin', 'superadmin']), Route.getTickets);
 
 // ADMIN / SUPERADMIN
-router.post('/assign', authenticate, authorize(['admin', 'superadmin']), assignTicket);
+router.post('/assign', authenticate, authorize(['admin', 'superadmin']), Route.assignTicket);
 
 // AGENT / ADMIN
-router.post('/status', authenticate, authorize(['admin', 'superadmin']), updateStatus);
+router.post('/status', authenticate, authorize(['admin', 'superadmin']), Route.updateStatus);
 
 // Comment
-router.post('/:id/comment', authenticate, authorize(['user', 'admin', 'superadmin']), addComment);
+router.post('/:id/comment', authenticate, authorize(['user', 'admin', 'superadmin']), Route.addComment);
+
 export default router;
