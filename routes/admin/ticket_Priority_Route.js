@@ -1,12 +1,12 @@
 import express from "express";
-import { createPriority, getPriorities, getPriority, updatePriority, deletePriority } from "../../controllers/admin/ticket_Priority_Controller.js"
+import * as Priority from "../../controllers/admin/ticket_Priority_Controller.js"
 
 const router = express.Router();
 
-router.post("/", createPriority);
-router.get("/", getPriorities);
-router.get("/:id", getPriority);
-router.put("/", updatePriority);
-router.delete("/", deletePriority)
+router.post("/", Priority.createPriority);
+router.get("/", Priority.getPriorities);
+router.get("/:id", Priority.getPriority);
+router.put("/", Priority.updatePriority);
+router.delete("/", Priority.deletePriority)
 
 export default router;
